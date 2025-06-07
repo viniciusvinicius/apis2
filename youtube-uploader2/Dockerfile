@@ -15,7 +15,7 @@ RUN npm install --production
 COPY youtube-uploader2/ ./
 
 # 6) Expõe porta da API
-EXPOSE 1996
+EXPOSE 3000
 
 # 7) Comando padrão
 CMD ["node", "index.js"]
