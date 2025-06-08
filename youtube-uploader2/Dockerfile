@@ -7,14 +7,11 @@ RUN apk add --no-cache curl
 # Definir diretório de trabalho
 WORKDIR /usr/src/app
 
-# Copiar arquivos de dependências primeiro (para cache do Docker)
-COPY package*.json ./
+# Copiar todo o código primeiro
+COPY . .
 
 # Instalar dependências - usar npm install em vez de npm ci
 RUN npm install --production && npm cache clean --force
-
-# Copiar código da aplicação
-COPY . .
 
 # Criar usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs && \
