@@ -5,7 +5,7 @@ services:
   youtube-uploader2:
     # Usa a imagem do GitHub Container Registry
     # Os usuários só precisam alterar o nome do repositório no .env
-    image: ${DOCKER_IMAGE:-ghcr.io/seuusuario/youtube-uploader2/youtube-uploader2:latest}
+    image: ${DOCKER_IMAGE:-ghcr.io/viniciusvinicius/youtube-uploader2/youtube-uploader2:latest}
     container_name: ${COMPOSE_PROJECT_NAME:-youtube-uploader}_app
     restart: unless-stopped
     ports:
