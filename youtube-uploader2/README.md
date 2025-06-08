@@ -6,8 +6,8 @@ Esta é uma API para upload de vídeos no YouTube que **qualquer pessoa pode usa
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/viniciusvinicius/youtube-uploader2.git
-cd SEU_REPOSITORIO
+git clone https://github.com/viniciusvinicius/apis2.git
+cd apis2
 
 # 2. Execute o script de deploy
 chmod +x deploy.sh
@@ -101,7 +101,7 @@ docker-compose restart
 
 ```bash
 # Deploy com repositório específico
-./deploy.sh --repo https://github.com/meuusuario/meu-fork.git
+./deploy.sh --repo https://github.com/viniciusvinicius/apis2.git
 
 # Deploy em diretório específico
 ./deploy.sh --dir /home/usuario/minha-api
@@ -134,7 +134,7 @@ O GitHub Actions faz build automático e publica no GitHub Container Registry:
 ### Configurações do Registry
 No `.env.example`, altere:
 ```bash
-DOCKER_IMAGE=ghcr.io/seuusuario/seurepositorio/youtube-uploader2:latest
+DOCKER_IMAGE=ghcr.io/seuusuario/apis2/youtube-uploader2:latest
 ```
 
 ## 🔒 Segurança Automática
