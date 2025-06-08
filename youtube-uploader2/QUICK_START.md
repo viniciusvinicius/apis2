@@ -24,7 +24,7 @@ TTL: 300
 ```bash
 # Clonar e executar
 git clone https://github.com/viniciusvinicius/youtube-uploader2.git
-cd SEU_REPOSITORIO
+cd apis2
 chmod +x deploy.sh
 ./deploy.sh
 ```
