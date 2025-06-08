@@ -2,13 +2,29 @@ version: '3.8'
 
 services:
   youtube-uploader2:
-    image: youtube-uploader2:latest
-    command: ["node","index.js"]
+    build: ./youtube-uploader2
+    container_name: youtube-uploader2
+    restart: unless-stopped
     ports:
-       - "${PORT}:${PORT}"
+      - "${PORT:-1996}:${PORT:-1996}"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-1996}
     volumes:
       - /tmp:/tmp
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: any
+      - ./logs:/usr/src/app/logs
+    networks:
+      - youtube-uploader-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-1996}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  youtube-uploader-network:
+    driver: bridge
+
+volumes:
+  logs:
