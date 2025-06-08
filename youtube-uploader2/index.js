@@ -83,7 +83,7 @@ app.post('/upload', async (req, res) => {
 });
 
 // ────────── Inicializa servidor ───
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 1996;
 app.listen(PORT, () => {
   console.log(`YouTube-uploader listening on port ${PORT}`);
 });
