@@ -16,7 +16,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configurações padrão (ALTERE AQUI para seu repositório)
-REPO_URL="https://github.com/SEU_USUARIO_GITHUB/SEU_REPOSITORIO.git"
+REPO_URL="https://github.com/viniciusvinicius/SEU_REPOSITORIO.git"
 DEPLOY_DIR="/opt/youtube-uploader"
 BRANCH="main"
 
