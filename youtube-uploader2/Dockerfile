@@ -10,8 +10,8 @@ WORKDIR /usr/src/app
 # Copiar arquivos de dependências primeiro (para cache do Docker)
 COPY package*.json ./
 
-# Instalar dependências
-RUN npm ci --only=production && npm cache clean --force
+# Instalar dependências - usar npm install em vez de npm ci
+RUN npm install --production && npm cache clean --force
 
 # Copiar código da aplicação
 COPY . .
