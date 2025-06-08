@@ -1,21 +1,37 @@
-# 1) Base
+# Use uma versão mais estável do Node
 FROM node:18-alpine
 
-# 2) Ponto de trabalho dentro do container
+# Instalar curl para healthcheck
+RUN apk add --no-cache curl
+
+# Definir diretório de trabalho
 WORKDIR /usr/src/app
 
-# 3) Copia apenas package.json para instalar dependências
-#    a partir da sub-pasta youtube-uploader2
-COPY youtube-uploader2/package.json youtube-uploader2/package-lock.json* ./
+# Copiar arquivos de dependências primeiro (para cache do Docker)
+COPY package*.json ./
 
-# 4) Instala deps
-RUN npm install --production
+# Instalar dependências
+RUN npm ci --only=production && npm cache clean --force
 
-# 5) Copia TODO o código da pasta youtube-uploader2 para /usr/src/app
-COPY youtube-uploader2/ ./
+# Copiar código da aplicação
+COPY . .
 
-# 6) Expõe porta da API
+# Criar usuário não-root para segurança
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Criar diretório de logs e ajustar permissões
+RUN mkdir -p logs && \
+    chown -R nodejs:nodejs /usr/src/app
+
+USER nodejs
+
+# Expor porta
 EXPOSE 1996
 
-# 7) Comando padrão
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:1996/health || exit 1
+
+# Comando de inicialização
 CMD ["node", "index.js"]
