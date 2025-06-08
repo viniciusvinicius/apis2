@@ -23,7 +23,7 @@ TTL: 300
 ### 3️⃣ Deploy Automático
 ```bash
 # Clonar e executar
-git clone https://github.com/viniciusvinicius/SEU_REPOSITORIO.git
+git clone https://github.com/viniciusvinicius/youtube-uploader2.git
 cd SEU_REPOSITORIO
 chmod +x deploy.sh
 ./deploy.sh
