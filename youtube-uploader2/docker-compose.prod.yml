@@ -1,1 +1,67 @@
 
+version: '3.8'
+
+services:
+  youtube-uploader2:
+    # Usa a imagem do GitHub Container Registry
+    # Os usuários só precisam alterar o nome do repositório no .env
+    image: ${DOCKER_IMAGE:-ghcr.io/seuusuario/youtube-uploader2/youtube-uploader2:latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-youtube-uploader}_app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-1996}:${PORT:-1996}"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${PORT:-1996}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - TRUST_PROXY=${TRUST_PROXY:-true}
+    volumes:
+      - /tmp:/tmp
+      - ./logs:${LOG_DIR:-/usr/src/app/logs}
+    networks:
+      - youtube-uploader-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-1996}/health"]
+      interval: ${HEALTH_CHECK_INTERVAL:-30}s
+      timeout: ${HEALTH_CHECK_TIMEOUT:-10}s
+      retries: ${HEALTH_CHECK_RETRIES:-3}
+      start_period: 40s
+    labels:
+      # Labels para Traefik (se o usuário usar)
+      - "traefik.enable=true"
+      - "traefik.http.routers.youtube-uploader.rule=Host(`${SUBDOMAIN:-youtube-api}.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.youtube-uploader.tls=${SSL_ENABLED:-false}"
+      - "traefik.http.routers.youtube-uploader.tls.certresolver=letsencrypt"
+      - "traefik.http.services.youtube-uploader.loadbalancer.server.port=${PORT:-1996}"
+
+  # Nginx só roda se SSL estiver habilitado
+  nginx:
+    image: nginx:alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-youtube-uploader}_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - youtube-uploader2
+    networks:
+      - youtube-uploader-network
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - SUBDOMAIN=${SUBDOMAIN:-youtube-api}
+      - SSL_ENABLED=${SSL_ENABLED:-false}
+    profiles:
+      # Só inicia se SSL estiver habilitado
+      - ssl
+
+networks:
+  youtube-uploader-network:
+    driver: bridge
+    name: ${COMPOSE_PROJECT_NAME:-youtube-uploader}_network
+
+volumes:
+  logs:
+    name: ${COMPOSE_PROJECT_NAME:-youtube-uploader}_logs
